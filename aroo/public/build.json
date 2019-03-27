@@ -1,0 +1,9 @@
+{
+    "css/aroo.min.css": [
+        "public/css/custom.css"
+    ],
+    "js/aroo.min.js": [
+        "public/js/conf.js"
+    ]
+}
+

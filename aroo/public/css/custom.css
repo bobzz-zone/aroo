@@ -1,0 +1,19 @@
+#page-desktop{
+	background-color: #f5f7fa!important;
+}
+.hero-and-content {
+	background-color: white!important;
+}
+.web-footer{
+	background-color: white!important;
+	border:0!important;
+}
+.navbar-main{display:none!important;visibility:hidden!important;}
+.web-footer .footer-links{display:none!important; visibility:hidden!important;}
+.dropdown-help{display:none!important;}
+.case-label{color:black!important; text-shadow:none!important;}
+.erpnext-icon{
+width:145px!important;
+height:30px;
+}
+

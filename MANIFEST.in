@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include aroo *.css
+recursive-include aroo *.csv
+recursive-include aroo *.html
+recursive-include aroo *.ico
+recursive-include aroo *.js
+recursive-include aroo *.json
+recursive-include aroo *.md
+recursive-include aroo *.png
+recursive-include aroo *.py
+recursive-include aroo *.svg
+recursive-include aroo *.txt
+recursive-exclude aroo *.pyc
