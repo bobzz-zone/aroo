@@ -2,29 +2,24 @@
 from __future__ import unicode_literals
 from . import __version__ as app_version
 
-app_name = "aroo"
+app_name = "Aroo"
 app_title = "Aroo"
-app_publisher = "Bobby"
-app_description = "For Aroo"
+app_publisher = "bobzz.zone@gmail.com"
+app_description = "For Styling"
 app_icon = "octicon octicon-file-directory"
 app_color = "grey"
 app_email = "bobzz.zone@gmail.com"
 app_license = "MIT"
+app_logo_url ="/assets/aroo/images/logo_icon.png"
 website_context = {
-        "favicon":      "assets/aroo/images/small.png",
-        "splash_image": "assets/aroo/images/big.png"
+	"favicon": 	"assets/aroo/images/small.png",
+	"splash_image": "assets/aroo/images/big.png"
 }
 # Includes in <head>
 # ------------------
-
-# include js, css files in header of desk.html
 app_include_css = "assets/css/aroo.min.css"
 app_include_js = "assets/js/aroo.min.js"
 web_include_css = "assets/css/aroo.min.css"
-
-# Includes in <head>
-# ------------------
-
 # include js, css files in header of desk.html
 # app_include_css = "/assets/aroo/css/aroo.css"
 # app_include_js = "/assets/aroo/js/aroo.js"
@@ -32,7 +27,8 @@ web_include_css = "assets/css/aroo.min.css"
 # include js, css files in header of web template
 # web_include_css = "/assets/aroo/css/aroo.css"
 # web_include_js = "/assets/aroo/js/aroo.js"
-
+setup_wizard_requires = "assets/aroo/js/setup_wizard.js"
+#setup_wizard_stages = "aroo.setup_wizard.get_setup_stages"
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
@@ -66,8 +62,8 @@ web_include_css = "assets/css/aroo.min.css"
 # ------------
 
 # before_install = "aroo.install.before_install"
-# after_install = "aroo.install.after_install"
-
+after_install = "aroo.custom_function.after_install"
+on_login="aroo.custom_function.login_block"
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
@@ -90,14 +86,17 @@ web_include_css = "assets/css/aroo.min.css"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"User": {
+		"validate": "aroo.custom_function.validate_user_quota",
+		"before_insert": "aroo.custom_function.set_block_module"
+		# "on_submit" : my_account.doctype.sync_server_settings.create_new_user
+	}
+}
 
+# on_session_creation =[
+# 	"aroo.custom_function.login_block"
+# ]
 # Scheduled Tasks
 # ---------------
 
