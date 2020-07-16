@@ -11,15 +11,15 @@ app_color = "grey"
 app_email = "bobzz.zone@gmail.com"
 app_license = "MIT"
 app_logo_url ="/assets/aroo/images/logo_icon.png"
-#website_context = {
-#	"favicon": 	"assets/aroo/images/small.png",
-#	"splash_image": "assets/aroo/images/big.png"
-#}
+website_context = {
+	"favicon": 	"assets/aroo/images/small.png",
+	"splash_image": "assets/aroo/images/big.png"
+}
 # Includes in <head>
 # ------------------
-#app_include_css = "assets/css/aroo.min.css"
-#app_include_js = "assets/js/aroo.min.js"
-#web_include_css = "assets/css/aroo.min.css"
+app_include_css = "assets/css/aroo.min.css"
+app_include_js = "assets/js/aroo.min.js"
+web_include_css = "assets/css/aroo.min.css"
 # include js, css files in header of desk.html
 # app_include_css = "/assets/aroo/css/aroo.css"
 # app_include_js = "/assets/aroo/js/aroo.js"
