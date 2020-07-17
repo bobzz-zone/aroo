@@ -84,7 +84,7 @@ def create_user_baru(fullname_user, email, password,plan):
 		],
 		"roles" : [
 			{"role" : "System Manager"},
-			#{"role" : plan},
+			{"role" : "Website Manager"},
 			{"role" : "Accounts Manager"},
 			{"role" : "Accounts User"},
 			{"role" : "HR Manager"},
