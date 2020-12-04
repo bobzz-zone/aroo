@@ -51,9 +51,9 @@ def patch_bom_kenny():
 				item = frappe.get_doc("Item",mat.item_code)
 				new_row = copy.copy(mat)
 				if item.variant_of:
-					item_like = mat.item_code[:len(mat.item_code)-3]
+					#item_like = mat.item_code[:len(mat.item_code)-3]
 					correct_mat = frappe.db.sql("""select parent from `tabItem Variant Attribute`
-						where attribute_value="{}" and attribute="Colour" and parent like "{}%" """.format(color,item_like),as_list=1)
+						where attribute_value="{}" and attribute="Colour" and parent IN (select name from `tabItem` where variant_of = "{}") """.format(color,item.variant_of),as_list=1)
 					if len(correct_mat)>0:
 						item = frappe.get_doc("Item",correct_mat[0][0])
 						color_code=item.item_code[len(item.item_code)-3:]
