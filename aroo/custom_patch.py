@@ -69,10 +69,17 @@ def patch_bom_kenny():
 								if x.item_code.startswith("FBR"):
 									color_code=x.item_code[len(x.item_code)-3:]
 						if color_code!="":
-							item = frappe.get_doc("Item","{}{}".format(mat.item_code[:len(mat.item_code)-3],color_code))
-							if item:
-								new_row.item_code = item.item_code
-								new_row.item_name = item.item_name
+							try:
+								item = frappe.get_doc("Item","{}{}".format(mat.item_code[:len(mat.item_code)-3],color_code))
+								if item:
+									new_row.item_code = item.item_code
+									new_row.item_name = item.item_name
+							except:
+								#if not found
+								search_simmilar = frappe.db.sql("""select name,item_name from `tabItem` where name like "P%{}" """.format(mat.item_code[3:6]),as_list=1)
+								if len(search_simmilar)>0:
+									new_row.item_code = search_simmilar[0][0]
+									new_row.item_name = search_simmilar[0][1]
 					material.append(new_row)
 					# if item.item_group=="Pleats":
 					# 	pass
