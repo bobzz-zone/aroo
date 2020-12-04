@@ -46,7 +46,7 @@ def patch_bom_kenny():
 			for att in item_detail.attributes:
 				if  att.attribute=="Colour":
 					color = att.attribute_value
-			color_code=variant["item_code"][len(variant["item_code"])-3:]
+			color_code=""
 			for mat in bom_temp.items:
 				item = frappe.get_doc("Item",mat.item_code)
 				new_row = copy.copy(mat)
@@ -56,6 +56,7 @@ def patch_bom_kenny():
 						where attribute_value="{}" and attribute="Colour" and parent like "{}%" """.format(color,item_like),as_list=1)
 					if len(correct_mat)>0:
 						item = frappe.get_doc("Item",correct_mat[0][0])
+						color_code=item.item_code[len(item.item_code)-3:]
 						new_row.item_code = item.item_code
 						new_row.item_name = item.item_name
 						material.append(new_row)
@@ -63,10 +64,15 @@ def patch_bom_kenny():
 						material.append(new_row)
 				else:
 					if item.item_group=="Pleats":
-						item = frappe.get_doc("Item","{}{}".format(mat.item_code[:len(mat.item_code)-3],color_code))
-						if item:
-							new_row.item_code = item.item_code
-							new_row.item_name = item.item_name
+						if color_code=="":
+							for x in bom_temp.items:
+								if x.item_code.startswith("FBR"):
+									color_code=x.item_code[len(x.item_code)-3:]
+						if color_code!="":
+							item = frappe.get_doc("Item","{}{}".format(mat.item_code[:len(mat.item_code)-3],color_code))
+							if item:
+								new_row.item_code = item.item_code
+								new_row.item_name = item.item_name
 					material.append(new_row)
 					# if item.item_group=="Pleats":
 					# 	pass
