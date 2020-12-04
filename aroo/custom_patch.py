@@ -16,6 +16,21 @@ def patch_pl_kenny():
 			new_pl.item_description=variant["description"]
 			new_pl.name=None
 			new_pl.save()
+def patch_item_name():
+	known = frappe.db.sql("""select name from `tabItem` where item_group="Fabrics" and variant_of!="" """,as_list=1)
+	for row in known:
+		item = frappe.get_doc("Item",row[0])
+		color = ""
+		for att in item.attributes:
+			if  att.attribute=="Colour":
+					color = att.attribute_value
+		if color in item.item_name:
+			continue
+		else:
+			item.item_name="{} {}".format(item.item_name,color)
+			item.description=item.item_name
+			item.save()
+			frappe.db.commit()
 def patch_del_bom():
 	known = frappe.db.sql("""select name,default_bom from `tabItem` where name like "TEMP-%" """,as_list=1)
 	for row in known:
@@ -27,7 +42,8 @@ def patch_del_bom():
 			if variant["default_bom"]:
 				bom_temp = frappe.get_doc("BOM",variant["default_bom"])
 				if bom_temp:
-					bom_temp.cancel()
+					if bom_temp.docstatus ==1:
+						bom_temp.cancel()
 					bom_temp.delete()
 					frappe.db.commit()
 def patch_bom_kenny():
