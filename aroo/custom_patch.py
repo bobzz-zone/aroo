@@ -2,6 +2,20 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 import copy
+def patch_pl_kenny():
+	known = frappe.db.sql("""select name,item_code from `tabItem Price` where item_code like "TEMP-%" """,as_list=1)
+	for row in known:
+		pl_temp = frappe.get_doc("Item Price",row[0])
+		new_item_parent = row[1][5:]
+		item_variant= frappe.db.sql("""select * from `tabItem` where variant_of="{}" """.format(new_item_parent),as_dict=1)
+		for variant in item_variant:
+			new_pl = copy.copy(pl_temp)
+			new_pl.item_code=item_variant["item_code"]
+			new_pl.item_code=item_variant["item_name"]
+			new_pl.item_description=item_variant["description"]
+			new_pl.name=None
+			new_pl.save()
+
 def patch_bom_kenny():
 	known = frappe.db.sql("""select name,default_bom from `tabItem` where name like "TEMP-%" """,as_list=1)
 	for row in known:
