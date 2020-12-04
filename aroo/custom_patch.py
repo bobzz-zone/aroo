@@ -15,7 +15,17 @@ def patch_pl_kenny():
 			new_pl.item_description=item_variant["description"]
 			new_pl.name=None
 			new_pl.save()
-
+def patch_del_bom():
+	known = frappe.db.sql("""select name,default_bom from `tabItem` where name like "TEMP-%" """,as_list=1)
+	for row in known:
+		bom_temp = frappe.get_doc("BOM",row[1])
+		new_item_parent = row[0][5:]
+		item_variant= frappe.db.sql("""select * from `tabItem` where variant_of="{}" """.format(new_item_parent),as_dict=1)
+		for variant in item_variant:
+			bom_temp = frappe.get_doc("BOM",variant["default_bom"])
+			if bom_temp:
+				bom_temp.cancel()
+				bom_temp.delete()
 def patch_bom_kenny():
 	known = frappe.db.sql("""select name,default_bom from `tabItem` where name like "TEMP-%" """,as_list=1)
 	for row in known:
@@ -32,6 +42,7 @@ def patch_bom_kenny():
 			for att in item_detail.attributes:
 				if  att.attribute=="Colour":
 					color = att.attribute_value
+			color_code=variant["item_code"][len(variant["item_code"])-3:]
 			for mat in bom_temp.items:
 				item = frappe.get_doc("Item",mat.item_code)
 				new_row = copy.copy(mat)
@@ -47,6 +58,11 @@ def patch_bom_kenny():
 					else:
 						material.append(new_row)
 				else:
+					if item.item_group=="Pleats":
+						item = frappe.get_doc("Item",mat.item_code[mat.item_code[:len(mat.item_code)-3]]+color_code)
+						if item:
+							new_row.item_code = item.item_code
+							new_row.item_name = item.item_name
 					material.append(new_row)
 					# if item.item_group=="Pleats":
 					# 	pass
