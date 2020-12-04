@@ -139,4 +139,3 @@ def validate_user_quota(doc,method):
 	# print("quota = {}".format(quota))
 	if flt(quota) < flt(enabled_users):
 		frappe.throw("Max enabled users reached for {} ({}/{})".format(frappe.local.site,flt(quota),flt(enabled_users)))
-	

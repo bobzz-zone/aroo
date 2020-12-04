@@ -88,8 +88,8 @@ on_login="aroo.custom_function.login_block"
 
 doc_events = {
 	"User": {
-		"validate": "aroo.custom_function.validate_user_quota",
-		"before_insert": "aroo.custom_function.set_block_module"
+		"validate": "aroo.custom_function.validate_user_quota"
+#		"before_insert": "aroo.custom_function.set_block_module"
 		# "on_submit" : my_account.doctype.sync_server_settings.create_new_user
 	}
 }

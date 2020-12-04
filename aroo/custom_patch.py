@@ -1,14 +1,17 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-
+import copy
 def patch_bom_kenny():
 	known = frappe.db.sql("""select name,default_bom from `tabItem` where name like "TEMP-%" """,as_list=1)
 	for row in known:
+		print(row[0])
 		bom_temp = frappe.get_doc("BOM",row[1])
 		new_item_parent = row[0][5:]
 		item_variant= frappe.db.sql("""select * from `tabItem` where variant_of="{}" """.format(new_item_parent),as_dict=1)
 		for variant in item_variant:
+			if variant["default_bom"]:
+				continue
 			material=[]
 			item_detail = frappe.get_doc("Item",variant["item_code"])
 			color = ""
@@ -17,17 +20,20 @@ def patch_bom_kenny():
 					color = att.attribute_value
 			for mat in bom_temp.items:
 				item = frappe.get_doc("Item",mat.item_code)
+				new_row = copy.copy(mat)
 				if item.variant_of:
+					item_like = mat.item_code[:len(mat.item_code)-3]
 					correct_mat = frappe.db.sql("""select parent from `tabItem Variant Attribute`
-						where attribute_value="{}" and attribute="Colour" """.format(color),as_list=1)
-					if len(correct_mat)>0
+						where attribute_value="{}" and attribute="Colour" and parent like "{}%" """.format(color,item_like),as_list=1)
+					if len(correct_mat)>0:
 						item = frappe.get_doc("Item",correct_mat[0][0])
-						new_row = mat.copy()
 						new_row.item_code = item.item_code
 						new_row.item_name = item.item_name
 						material.append(new_row)
 					else:
-						material.append(mat)
+						material.append(new_row)
+				else:
+					material.append(new_row)
 					# if item.item_group=="Pleats":
 					# 	pass
 					# elif item.item_group=="Fabrics":
