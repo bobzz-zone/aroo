@@ -11,9 +11,9 @@ def patch_pl_kenny():
 		item_variant= frappe.db.sql("""select * from `tabItem` where variant_of="{}" """.format(new_item_parent),as_dict=1)
 		for variant in item_variant:
 			new_pl = copy.copy(pl_temp)
-			new_pl.item_code=item_variant["item_code"]
-			new_pl.item_code=item_variant["item_name"]
-			new_pl.item_description=item_variant["description"]
+			new_pl.item_code=variant["item_code"]
+			new_pl.item_name=variant["item_name"]
+			new_pl.item_description=variant["description"]
 			new_pl.name=None
 			new_pl.save()
 def patch_del_bom():
