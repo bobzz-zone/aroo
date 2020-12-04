@@ -38,6 +38,7 @@ def patch_bom_kenny():
 		new_item_parent = row[0][5:]
 		item_variant= frappe.db.sql("""select * from `tabItem` where variant_of="{}" """.format(new_item_parent),as_dict=1)
 		for variant in item_variant:
+			valid=1
 			if variant["default_bom"]:
 				continue
 			material=[]
@@ -46,7 +47,7 @@ def patch_bom_kenny():
 			for att in item_detail.attributes:
 				if  att.attribute=="Colour":
 					color = att.attribute_value
-			color_code=""
+			fbr_code=""
 			for mat in bom_temp.items:
 				item = frappe.get_doc("Item",mat.item_code)
 				new_row = copy.copy(mat)
@@ -56,30 +57,33 @@ def patch_bom_kenny():
 						where attribute_value="{}" and attribute="Colour" and parent IN (select name from `tabItem` where variant_of = "{}") """.format(color,item.variant_of),as_list=1)
 					if len(correct_mat)>0:
 						item = frappe.get_doc("Item",correct_mat[0][0])
-						color_code=item.item_code[len(item.item_code)-3:]
+						fbr_code=item.item_code[len(item.item_code)-6:]
 						new_row.item_code = item.item_code
 						new_row.item_name = item.item_name
 						material.append(new_row)
 					else:
 						material.append(new_row)
+						valid=0
 				else:
 					if item.item_group=="Pleats":
-						if color_code=="":
+						if fbr_code=="":
 							for x in bom_temp.items:
 								if x.item_code.startswith("FBR"):
-									color_code=x.item_code[len(x.item_code)-3:]
-						if color_code!="":
-							try:
-								item = frappe.get_doc("Item","{}{}".format(mat.item_code[:len(mat.item_code)-3],color_code))
-								if item:
-									new_row.item_code = item.item_code
-									new_row.item_name = item.item_name
-							except:
-								#if not found
-								search_simmilar = frappe.db.sql("""select name,item_name from `tabItem` where name like "P%{}" """.format(mat.item_code[3:6]),as_list=1)
-								if len(search_simmilar)>0:
-									new_row.item_code = search_simmilar[0][0]
-									new_row.item_name = search_simmilar[0][1]
+									fbr_code=x.item_code[len(x.item_code)-6:]
+						if fbr_code!="":
+							#try:
+							#	item = frappe.get_doc("Item","{}{}".format(mat.item_code[:len(mat.item_code)-3],color_code))
+							#	if item:
+							#		new_row.item_code = item.item_code
+							#		new_row.item_name = item.item_name
+							#except:
+							#	#if not found
+							search_simmilar = frappe.db.sql("""select name,item_name from `tabItem` where name like "P%{}" """.format(fbr_code),as_list=1)
+							if len(search_simmilar)>0:
+								new_row.item_code = search_simmilar[0][0]
+								new_row.item_name = search_simmilar[0][1]
+						else:
+							valid=0
 					material.append(new_row)
 					# if item.item_group=="Pleats":
 					# 	pass
@@ -101,5 +105,6 @@ def patch_bom_kenny():
 				"items":material
 				})
 			bom.save()
-			bom.submit()
+			if valid==1:
+				bom.submit()
 			frappe.db.commit()
