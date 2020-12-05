@@ -99,7 +99,7 @@ def patch_bom_kenny():
 							if len(search_simmilar)>0:
 								found=0
 								for p in search_simmilar:
-									if p[1:3]==size:
+									if p[0][1:3]==size:
 										new_row.item_code = p[0]
 										new_row.item_name = p[1]
 										found=1
