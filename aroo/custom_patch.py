@@ -94,10 +94,18 @@ def patch_bom_kenny():
 							#		new_row.item_name = item.item_name
 							#except:
 							#	#if not found
+							size = mat.item_code[1:3]
 							search_simmilar = frappe.db.sql("""select name,item_name from `tabItem` where name like "P%{}" """.format(fbr_code),as_list=1)
 							if len(search_simmilar)>0:
-								new_row.item_code = search_simmilar[0][0]
-								new_row.item_name = search_simmilar[0][1]
+								found=0
+								for p in search_simmilar:
+									if p[1:3]==size:
+										new_row.item_code = p[0]
+										new_row.item_name = p[1]
+										found=1
+								if found==0:
+									new_row.item_code = search_simmilar[0][0]
+									new_row.item_name = search_simmilar[0][1]
 						else:
 							valid=0
 					material.append(new_row)
